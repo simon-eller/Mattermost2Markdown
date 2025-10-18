@@ -18,11 +18,12 @@ First you need to get your personal session token.
 curl -i -d '{"login_id":"someone@nowhere.com","password":"thisisabadpassword","token":"mfa-token"}' https://urltoyourmattermostserver.com/api/v4
 ```
 
-For further information look at the [Mattermost API Reference (4.0.0)](https://api.mattermost.com/#tag/authentication
-).
+For further information look at the [Mattermost API Reference (4.0.0)](https://api.mattermost.com/#tag/authentication).
+
+If enabled you can also generate a new session token for applications in the user settings.
 
 ### Channel ID
-Then you need to find out the IDs of the channels you want to export.
+Then you may want to find out the IDs of the channels you want to export.
 
 1. Select the channel from the left sidebar.
 2. Select the channel name at the top.
@@ -33,9 +34,9 @@ Then you need to find out the IDs of the channels you want to export.
 Now you have everything to begin with the export.
 
 1. Download this program [Mattermost2Markdown.py](https://github.com/simon-eller/Mattermost2Markdown/blob/main/Mattermost2Markdown.py) to your machine with Python installed.
-2. Insert the data from the previous chapters after line 99 in the code.
+2. Insert the server and user data.
 3. Run the program.
-   - Now for every ID in the `channels` list a subfolder named like the ID will be created.
+   - Now for every ID in the `channels` list a subfolder named like the user will be created.
    - The attachments will be stored in this folder.
    - Every message will be saved to the file `chat.md` also stored in this folder.
 
@@ -43,11 +44,7 @@ Now you can view your exported file in a Markdown editor.
 
 ## Advanced
 ### Timezone and Time Format
-The program converts the timestamps of sent messages to CET (central european timezone). You can change this to meet your timezone by changing the count of hours in the following line.
-Here you can also choose a different Time Format. For further information have a look at the [Python strftime cheatsheet](https://strftime.org/).
-```python
-post_time_timezonecorrected = (post_time + datetime.timedelta(hours=1)).strftime('%d.%m.%Y %H:%M:%S')
-```
+The program converts the timestamps of messages to the timezone configured for the user.
 
 ## Donating
 
