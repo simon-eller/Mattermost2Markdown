@@ -6,8 +6,9 @@ repo:       https://github.com/simon-eller/Mattermost2Markdown
 """
 
 import requests, json, os, time, datetime
+from zoneinfo import ZoneInfo
 
-def mattermost_channel_content_to_markdown(url, token, channel_id, output_folder):
+def mattermost_channel_content_to_markdown(url, token, channel_id, local_timezone, output_folder):
     """
     This function exports every message including attachments of a given Mattermost channel.
 
@@ -47,10 +48,15 @@ def mattermost_channel_content_to_markdown(url, token, channel_id, output_folder
                 # encapsulate the array for the current message
                 post = posts["posts"][post_id]
 
-                # convert UNIX timestamp into datetime format
-                post_time = datetime.datetime.utcfromtimestamp(int(post['create_at'])/1000)
-                # shift from UTC to CET -> change hours to achieve different timezone
-                post_time_timezonecorrected = (post_time + datetime.timedelta(hours=1)).strftime('%d.%m.%Y %H:%M:%S')
+                # 1. Convert millisecond UNIX timestamp to a timezone-aware UTC datetime
+                # (Dividing by 1000.0 preserves any fractional seconds if they exist)
+                utc_time = datetime.datetime.fromtimestamp(int(post['create_at']) / 1000.0, tz=datetime.timezone.utc)
+
+                # 2. Convert directly to Europe/Berlin time (automatically handles CET vs CEST)
+                berlin_time = utc_time.astimezone(ZoneInfo(local_timezone))
+
+                # 3. Format into your desired string format
+                post_time_timezonecorrected = berlin_time.strftime('%d.%m.%Y %H:%M:%S')
 
                 # if id of the user of current message is not assigned already to a real name
                 if post['user_id'] not in known_users:
@@ -100,7 +106,8 @@ def mattermost_channel_content_to_markdown(url, token, channel_id, output_folder
 mattermost_server   = "https://<url to your Mattermost server>/api/v4"
 session_token       = "<your personal session token>"
 channels            = ["<id of channel 1>","<id of channel 2>"]
+local_timezone      = "Europe/Berlin"
 
 # download every channel of the list channels
 for channel in channels:
-    mattermost_channel_content_to_markdown(mattermost_server, session_token, channel, channel)
+    mattermost_channel_content_to_markdown(mattermost_server, session_token, channel, local_timezone, channel)

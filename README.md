@@ -34,7 +34,8 @@ Now you have everything to begin with the export.
 
 1. Download this program [Mattermost2Markdown.py](https://github.com/simon-eller/Mattermost2Markdown/blob/main/Mattermost2Markdown.py) to your machine with Python installed.
 2. Insert the data from the previous chapters after line 99 in the code.
-3. Run the program.
+3. At this point, you can also set your correct timezone, DST etc. will be applied automatically by `zoneinfo`. 
+4. Run the program.
    - Now for every ID in the `channels` list a subfolder named like the ID will be created.
    - The attachments will be stored in this folder.
    - Every message will be saved to the file `chat.md` also stored in this folder.
@@ -43,8 +44,8 @@ Now you can view your exported file in a Markdown editor.
 
 ## Advanced
 ### Timezone and Time Format
-The program converts the timestamps of sent messages to CET (central european timezone). You can change this to meet your timezone by changing the count of hours in the following line.
-Here you can also choose a different Time Format. For further information have a look at the [Python strftime cheatsheet](https://strftime.org/).
+The program converts the timestamps of sent messages to the `local_timezone` you have configured. 
+You can also choose a different Time Format by adapting the line shown below. For further information have a look at the [Python strftime cheatsheet](https://strftime.org/).
 ```python
 post_time_timezonecorrected = (post_time + datetime.timedelta(hours=1)).strftime('%d.%m.%Y %H:%M:%S')
 ```
